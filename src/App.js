@@ -45,7 +45,7 @@ export default function App() {
   const [workouts, setWorkouts] = useState(WORKOUTS);
 
   function handleAddWorkout(workout) {
-    setWorkouts((workout) => [...workouts, workout]);
+    setWorkouts((workouts) => [...workouts, workout]);
   }
 
   return (
@@ -59,7 +59,10 @@ export default function App() {
 
 function Form({ onAddWorkout }) {
   const [selectedWorkout, setSelectedWorkout] = useState("push");
-  const [selectedExercise, setSelectedExercise] = useState("");
+  const [selectedExercise, setSelectedExercise] = useState("Bench Press");
+  const [selectedSets, setSelectedSets] = useState(0);
+  const [selectedReps, setSelectedReps] = useState(0);
+  const [weight, setWeight] = useState(0);
   function addWorkout(e) {
     e.preventDefault();
 
@@ -67,13 +70,22 @@ function Form({ onAddWorkout }) {
       id: crypto.randomUUID(),
       category: selectedWorkout,
       exercise: selectedExercise,
+      sets: selectedSets,
+      reps: selectedReps,
+      completed: false,
+      weight: weight,
     };
 
     onAddWorkout(newItem);
+    setSelectedWorkout("push");
+    setSelectedExercise("Bench Press");
+    setSelectedSets(0);
+    setSelectedReps(0);
+    setWeight(0);
   }
   //Workout Form JSX
   return (
-    <form>
+    <form onSubmit={addWorkout}>
       <div>
         <label>Splits:</label>
         <select
@@ -97,6 +109,35 @@ function Form({ onAddWorkout }) {
             ))}
         </select>
         {/*    Sets  & REPS needs to be displayed*/}
+        <label>Sets:</label>
+        <select
+          value={selectedSets}
+          onChange={(e) => setSelectedSets(Number(e.target.value))}
+        >
+          {/*  From 1-15*/}
+          {Array.from({ length: 15 }, (_, i) => i + 1).map((num) => (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        <label>Reps:</label>
+        <select
+          value={selectedReps}
+          onChange={(e) => setSelectedReps(Number(e.target.value))}
+        >
+          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+            <option value={num} key={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        <label>Weight:</label>
+        <input
+          type="text"
+          value={weight}
+          onChange={(e) => setWeight(Number(e.target.value))}
+        />
       </div>
       <button>Set Workout!</button>
     </form>
@@ -109,7 +150,7 @@ function Workouts({ workouts }) {
       <h1>Your Workouts Here:</h1>
       <ul>
         {workouts.map((workout) => (
-          <Workout item={workout} />
+          <Workout key={workout.id} item={workout} />
         ))}
       </ul>
     </div>
