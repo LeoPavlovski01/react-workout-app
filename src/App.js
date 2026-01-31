@@ -47,13 +47,16 @@ export default function App() {
   function handleAddWorkout(workout) {
     setWorkouts((workouts) => [...workouts, workout]);
   }
+  function handleDeleteWorkout(id) {
+    setWorkouts((workouts) => workouts.filter((workout) => workout.id !== id));
+  }
 
   return (
     <div className="container">
       <Greeting />
       <div className="content">
         <Form onAddWorkout={handleAddWorkout} />
-        <Workouts workouts={workouts} />
+        <Workouts onDeleteWorkout={handleDeleteWorkout} workouts={workouts} />
       </div>
     </div>
   );
@@ -147,12 +150,12 @@ function Form({ onAddWorkout }) {
         onChange={(e) => setWeight(Number(e.target.value))}
       />
 
-      <button className="button">Set Workout!</button>
+      <button>Set Workout!</button>
     </form>
   );
 }
 
-function Workouts({ workouts }) {
+function Workouts({ workouts, onDeleteWorkout }) {
   return (
     <table className="table">
       <thead>
@@ -163,12 +166,14 @@ function Workouts({ workouts }) {
           <th>Reps</th>
           <th>Completed</th>
           <th>Weight</th>
+          <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
         {workouts.map((item) => (
           <tr key={item.id}>
-            <Workout item={item} />
+            <Workout onDeleteWorkout={onDeleteWorkout} item={item} />
           </tr>
         ))}
       </tbody>
@@ -176,7 +181,7 @@ function Workouts({ workouts }) {
   );
 }
 
-function Workout({ item }) {
+function Workout({ item, onDeleteWorkout }) {
   // I want to make a table here.
   return (
     <>
@@ -186,6 +191,14 @@ function Workout({ item }) {
       <td>{item.reps}</td>
       <td>{item.completed ? "✅ Completed" : "⏳ Not Completed"}</td>
       <td>{item.weight}</td>
+      <td>
+        <button className="edit-btn">Edit</button>
+      </td>
+      <td>
+        <button className="delete-btn" onClick={() => onDeleteWorkout(item.id)}>
+          Delete
+        </button>
+      </td>
     </>
   );
 }
