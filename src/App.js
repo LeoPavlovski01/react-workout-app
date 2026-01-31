@@ -49,10 +49,12 @@ export default function App() {
   }
 
   return (
-    <div>
+    <div className="container">
       <Greeting />
-      <Form onAddWorkout={handleAddWorkout} />
-      <Workouts workouts={workouts} />
+      <div className="content">
+        <Form onAddWorkout={handleAddWorkout} />
+        <Workouts workouts={workouts} />
+      </div>
     </div>
   );
 }
@@ -85,86 +87,105 @@ function Form({ onAddWorkout }) {
   }
   //Workout Form JSX
   return (
-    <form onSubmit={addWorkout}>
-      <div>
-        <label>Splits:</label>
-        <select
-          value={selectedWorkout}
-          onChange={(e) => setSelectedWorkout(e.target.value)}
-        >
-          <option value="push">{SPLITS[0].toUpperCase()}</option>
-          <option value="pull">{SPLITS[1].toUpperCase()}</option>
-          <option value="legs">{SPLITS[2].toUpperCase()}</option>
-        </select>
-        <label>Exercise:</label>
-        <select
-          value={selectedExercise}
-          onChange={(e) => setSelectedExercise(e.target.value)}
-        >
-          {selectedWorkout &&
-            EXERCISES[selectedWorkout].map((exercise) => (
-              <option key={exercise} value={exercise}>
-                {exercise}
-              </option>
-            ))}
-        </select>
-        {/*    Sets  & REPS needs to be displayed*/}
-        <label>Sets:</label>
-        <select
-          value={selectedSets}
-          onChange={(e) => setSelectedSets(Number(e.target.value))}
-        >
-          {/*  From 1-15*/}
-          {Array.from({ length: 15 }, (_, i) => i + 1).map((num) => (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          ))}
-        </select>
-        <label>Reps:</label>
-        <select
-          value={selectedReps}
-          onChange={(e) => setSelectedReps(Number(e.target.value))}
-        >
-          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-            <option value={num} key={num}>
-              {num}
-            </option>
-          ))}
-        </select>
-        <label>Weight:</label>
-        <input
-          type="text"
-          value={weight}
-          onChange={(e) => setWeight(Number(e.target.value))}
-        />
-      </div>
-      <button>Set Workout!</button>
+    <form onSubmit={addWorkout} className="form">
+      <label>Splits:</label>
+      <select
+        className="select"
+        value={selectedWorkout}
+        onChange={(e) => setSelectedWorkout(e.target.value)}
+      >
+        {SPLITS.map((split) => (
+          <option key={split} value={split}>
+            {split.toUpperCase()}
+          </option>
+        ))}
+      </select>
+
+      <label>Exercise:</label>
+      <select
+        className="select"
+        value={selectedExercise}
+        onChange={(e) => setSelectedExercise(e.target.value)}
+      >
+        {EXERCISES[selectedWorkout].map((exercise) => (
+          <option key={exercise} value={exercise}>
+            {exercise}
+          </option>
+        ))}
+      </select>
+
+      <label>Sets:</label>
+      <select
+        className="select"
+        value={selectedSets}
+        onChange={(e) => setSelectedSets(Number(e.target.value))}
+      >
+        {Array.from({ length: 15 }, (_, i) => i + 1).map((num) => (
+          <option key={num} value={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+
+      <label>Reps:</label>
+      <select
+        className="select"
+        value={selectedReps}
+        onChange={(e) => setSelectedReps(Number(e.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <option key={num} value={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+
+      <label>Weight:</label>
+      <input
+        className="input"
+        value={weight}
+        onChange={(e) => setWeight(Number(e.target.value))}
+      />
+
+      <button className="button">Set Workout!</button>
     </form>
   );
 }
 
 function Workouts({ workouts }) {
   return (
-    <div>
-      <h1>Your Workouts Here:</h1>
-      <ul>
-        {workouts.map((workout) => (
-          <Workout key={workout.id} item={workout} />
+    <table className="table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Exercise</th>
+          <th>Sets</th>
+          <th>Reps</th>
+          <th>Completed</th>
+          <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        {workouts.map((item) => (
+          <tr key={item.id}>
+            <Workout item={item} />
+          </tr>
         ))}
-      </ul>
-    </div>
+      </tbody>
+    </table>
   );
 }
+
 function Workout({ item }) {
+  // I want to make a table here.
   return (
-    <li key={item.id}>
-      <span>{item.category} </span>
-      <span>{item.exercise} </span>
-      <span>{item.sets} </span>
-      <span>{item.reps} </span>
-      <span>{item.completed} </span>
-      <span>{item.weight} </span>
-    </li>
+    <>
+      <td>{item.category}</td>
+      <td>{item.exercise}</td>
+      <td>{item.sets}</td>
+      <td>{item.reps}</td>
+      <td>{item.completed ? "✅ Completed" : "⏳ Not Completed"}</td>
+      <td>{item.weight}</td>
+    </>
   );
 }
